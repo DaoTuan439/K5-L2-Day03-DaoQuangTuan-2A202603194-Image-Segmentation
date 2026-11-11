@@ -4,7 +4,7 @@
 
 - Mã học viên theo lớp: 2A202603194
 - Ngày / CVAT local: 11/11/2026 / CVAT local
-- Công cụ đã dùng: CVAT Polygon/Brush (toàn bộ Easy, object Medium đầu tiên, các chỗ sửa); nhãn nháp AI từ `tools/ai-prelabel` cho phần còn lại của Medium và Hard: `facebook/mask2former-swin-large-coco-panoptic` + SAM 2.1 (`facebook/sam2.1-hiera-large`) tinh chỉnh biên, chạy trên Colab GPU, ngưỡng tin cậy 0.5 (theo `prelabel_log.json`: Medium 41 giây, 58 object nháp, SAM 2.1 tinh chỉnh 49 mask; Hard 3,2 giây, 42 segment nháp). Mọi nhãn nháp đều được kiểm và sửa trong CVAT trước khi export.
+- Công cụ đã dùng: CVAT Polygon/Brush (toàn bộ Easy, object Medium đầu tiên, các chỗ sửa); nhãn nháp AI từ `tools/ai-prelabel` cho phần còn lại của Medium và Hard: `facebook/mask2former-swin-large-coco-panoptic` + SAM 2.1 (`facebook/sam2.1-hiera-large`) tinh chỉnh biên, chạy trên Colab GPU, ngưỡng tin cậy 0.5 (theo `prelabel_log.json`: Medium 41 giây, 58 object nháp, SAM 2.1 tinh chỉnh 49 mask; Hard 3,2 giây, 42 segment nháp). Nhãn nháp Medium/Hard được kiểm và sửa trong CVAT trước khi export. Checkpoint: `cp3_thin` và `cp4_curb` vẽ tay hoàn toàn; `cp1_holes`, `cp2_slice`, `cp5_occlusion`, `cp6_coverage` dùng nhãn nháp từ cùng notebook nhưng lần chạy này trên CPU nên **không có SAM** (`USE_SAM_REFINE = False`; cp1–cp5 dùng Mask2Former COCO panoptic, cp6 dùng `facebook/mask2former-swin-large-cityscapes-semantic`).
 
 Mã học viên là mã lớp cấp; không cần ghi họ tên trong report nếu kênh [LMS](https://aithucchien.vinuni.edu.vn) đã nhận diện bạn. Chỉ ghi công cụ thật sự đã dùng; không có SAM vẫn làm bài bình thường.
 
@@ -17,15 +17,23 @@ Ghi tên ZIP đúng như file trong `submissions/` và số ảnh đã vẽ, Sav
 | easy_semantic | `easy_semantic.zip` | 3 / 3 | 20 |
 | medium_instance | `medium_instance.zip` | 3 / 3 | 32 |
 | hard_panoptic | `hard_panoptic.zip` | 2 / 2 | 30 |
-| cp1_holes | … | … / 1 | 3 |
-| cp2_slice | … | … / 1 | 3 |
-| cp5_occlusion | … | … / 1 | 3 |
-| cp3_thin | … | … / 1 | 3 |
-| cp4_curb | … | … / 1 | 3 |
-| cp6_coverage | … | … / 1 | 3 |
+| cp1_holes | `cp1_holes.zip` | 1 / 1 | 3 |
+| cp2_slice | `cp2_slice.zip` | 1 / 1 | 3 |
+| cp5_occlusion | `cp5_occlusion.zip` | 1 / 1 | 3 |
+| cp3_thin | `cp3_thin.zip` | 1 / 1 | 3 |
+| cp4_curb | `cp4_curb.zip` | 1 / 1 | 3 |
+| cp6_coverage | `cp6_coverage.zip` | 1 / 1 | 3 |
 | **Tổng tối đa** | | | **100** |
 
 Nếu export lỗi, ghi task, dữ liệu đã Save đến đâu và lỗi đã báo coach.
+
+Ghi chú checkpoint:
+- `cp1_holes` (xe mô tô Honda): mask xe giữ cả kính chắn gió và phần trong vành bánh, không khoét lỗ; chân chống đỏ không tính vào xe. Sửa nhãn nháp: xóa mask `bus` ở mái lều đen (không phải xe), đổi xe van "Kawasaki" từ `bus` sang `car`. Giữ xe nhà di động màu kem bên trái là `bus` (6 object).
+- `cp2_slice` (bãi đỗ xe): giữ nhãn nháp, 12 object; xe trắng và xe xanh mở cửa đỗ sát nhau ở góc trái là hai instance `car` riêng.
+- `cp5_occlusion` (Athens): giữ nhãn nháp, 21 object; xe máy bị người lái che vẫn là một mask, người lái tách riêng.
+- `cp3_thin`: vẽ tay bằng Polygon ở zoom lớn; pole ~1,8%, traffic sign ~4,4% ảnh (biển xanh lớn, biển "PASSENGER CARS ONLY", các biển nhỏ), còn lại sky và road.
+- `cp4_curb`: vẽ tay; road dừng ở mép bó vỉa, vỉa hè bê tông bên phải và mảng bê tông ở góc đường là `sidewalk`; dải đất có túi rác để trống.
+- `cp6_coverage`: giữ nhãn nháp semantic (road, sidewalk, building, sky, car, person); file nộp được export dạng COCO 1.0.
 
 ## 2. Một quyết định trước khi dùng gợi ý
 
