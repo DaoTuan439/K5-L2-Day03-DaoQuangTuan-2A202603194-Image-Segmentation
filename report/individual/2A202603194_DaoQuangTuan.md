@@ -33,14 +33,14 @@ Ghi chú checkpoint:
 - `cp5_occlusion` (Athens): giữ nhãn nháp, 21 object; xe máy bị người lái che vẫn là một mask, người lái tách riêng.
 - `cp3_thin`: vẽ tay bằng Polygon ở zoom lớn; pole ~1,8%, traffic sign ~4,4% ảnh (biển xanh lớn, biển "PASSENGER CARS ONLY", các biển nhỏ), còn lại sky và road.
 - `cp4_curb`: vẽ tay; road dừng ở mép bó vỉa, vỉa hè bê tông bên phải và mảng bê tông ở góc đường là `sidewalk`; dải đất có túi rác để trống.
-- `cp6_coverage`: giữ nhãn nháp semantic (road, sidewalk, building, sky, car, person); file nộp được export dạng COCO 1.0.
+- `cp6_coverage`: giữ nhãn nháp semantic (road, sidewalk, building, sky, car, person), export Segmentation mask 1.1. Xe buýt và xe tải "CAPITAL" không thuộc 7 lớp nên để trống.
 
 ## 2. Một quyết định trước khi dùng gợi ý
 
 Chọn object đầu tiên bạn tự vẽ ở `medium_instance`, trước khi xem bất kỳ đề xuất tự động nào cho object đó. Ghi ảnh/vị trí đủ để tìm lại; “quy tắc biên” là lý do bạn chọn hoặc dừng mask ở ranh đó.
 
 - Ảnh, vị trí và object Medium đầu tiên tự vẽ: `000000181542.jpg`, người phụ nữ mặc áo dài trắng đi bộ ở giữa ảnh, trên vạch qua đường, giữa hai xe máy (bbox khoảng x 187–305, y 131–461). Vẽ tay bằng Polygon, export riêng thành `medium_instance_manual.zip` trước khi chạy nhãn nháp AI.
-- Class và quy tắc tôi dùng để chọn biên: `person`. … (ghi bạn đã tô/không tô những phần nào và vì sao, ví dụ: tóc, tay, túi đeo vai, vạt áo dài; chỗ chân giao với bánh xe máy phía sau; bóng dưới chân)
+- Class và quy tắc tôi dùng để chọn biên: `person`, vẽ một Polygon (94 điểm) theo phần nhìn thấy của người. Tính vào mask: tóc, mặt, cổ, hai tay và bàn tay, dây túi trên vai, toàn bộ áo dài kể cả hai vạt áo buông xuống, quần, hai bàn chân và dép — vì đó là người và đồ đang mặc/mang, di chuyển cùng người. Không tính: bóng trên mặt đường, người lái và xe máy phía sau lộ ra hai bên thân, phần bánh xe máy bên phải sát vạt áo. Biên đặt ở mép áo trắng nơi tiếp giáp xe máy/người lái phía sau, vì tương phản sáng–tối ở đó rõ nhất; chỗ ngón tay chạm vạt áo vẫn giữ trong mask.
 - Nếu dùng gợi ý sau đó: vùng gợi ý sai/đúng, hành động sửa/giữ và lý do: notebook giữ object tự vẽ và bỏ 1 object AI trùng với nó. Sau khi nạp nhãn nháp vào CVAT, tôi sửa 2 lỗi: (1) `000000458325` — xe nôi do nhóm người đẩy ở cuối phố bị AI gán `motorcycle` → xóa, vì xe nôi không thuộc 6 lớp (ảnh còn 20 object); (2) `000000373353` — AI bỏ sót người mặc áo khoác đỏ trong nhóm đi qua đường bên phải → vẽ thêm `person`, tổng cộng thêm 2 người (ảnh từ 20 lên 22 object). Giữ đề xuất ở `000000181542` (17 object), gồm xe bán tải là `truck` và người lái tách riêng khỏi xe máy, vì đúng quy ước COCO.
 - Nếu không dùng gợi ý: ghi “không dùng”; vẫn giải thích một quyết định gán nhãn của mình.
 
